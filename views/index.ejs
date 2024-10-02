@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles.css">
+    <title>Mental Health Chatbot</title>
+</head>
+<body>    
+    <div class="container">
+        <h1>NEMO</h1>
+        <h4>Mental Health Chatbot</h4>
+        <div class="chat-box" id="chat-history">
+            <!-- GIF above the default message -->
+            <div class="default-gif">
+                <img src="/bot.gif" alt="Welcome GIF" />
+            </div>
+
+            <!-- Default message -->
+            <div class="bot-message default-message">
+                What's on your mind today?
+            </div>
+
+            <% chatHistory.forEach(message => { %>
+                <div class="<%= message.role === 'user' ? 'user-message' : 'bot-message' %>">
+                    <%= message.text %>
+                </div>
+            <% }) %>
+        </div>
+        <div class="input-container">
+            <input type="text" id="message-input" placeholder="Type your message..." />
+            <img id="send-button" src="/send-icon.png" alt="Send" />
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        const sendButton = document.getElementById('send-button');
+        const messageInput = document.getElementById('message-input');
+        const chatHistoryDiv = document.getElementById('chat-history');
+        const defaultMessage = document.querySelector('.default-message');
+
+        const sendMessage = async () => {
+            const message = messageInput.value;
+            if (!message) return;
+
+            // Display user message
+            chatHistoryDiv.innerHTML += `<div class="user-message">${message}</div>`;
+            messageInput.value = '';
+
+            // Fade out the default message
+            if (defaultMessage) {
+                defaultMessage.style.transition = "opacity 0.5s ease";
+                defaultMessage.style.opacity = 0;
+                setTimeout(() => {
+                    if (defaultMessage.parentNode) {
+                        defaultMessage.remove();
+                    }
+                }, 500);
+            }
+
+            // Scroll to the bottom of chat after user message
+            chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
+
+            // Display thinking GIF before bot response
+            const gifElement = `<div class="thinking-message"><img src="/reply.gif" alt="thinking..." class="thinking-gif" /></div>`;
+            chatHistoryDiv.innerHTML += gifElement;
+
+            // Scroll to the bottom of chat after displaying GIF
+            chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
+
+            // Send message to server
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message }),
+            });
+
+            const data = await response.json();
+            if (data.botResponse) {
+                // Remove the GIF before displaying the bot response
+                const thinkingGif = document.querySelector('.thinking-gif').parentElement;
+                if (thinkingGif) thinkingGif.remove();
+
+                // Display bot response
+                chatHistoryDiv.innerHTML += `<div class="bot-message">${data.botResponse}</div>`;
+
+                // Scroll to the bottom of chat after bot response
+                chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
+            } else {
+                console.error(data.error);
+            }
+        };
+
+        sendButton.addEventListener('click', sendMessage);
+
+        // Add event listener for Enter key
+        messageInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Optional: Auto-scroll when the page loads
+        window.onload = () => {
+            chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
+        };
+    </script>
+</body>
+</html>
