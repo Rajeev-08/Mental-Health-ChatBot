@@ -55,11 +55,12 @@ node server.js
 ```
 The server will start on: 🌍 http://localhost:3000
 
-## 📌 Future Improvements
-🔹 Store chat history in a database (MongoDB).
-🔹 Implement user authentication for personalized experiences.
-🔹 Add multi-language support.
-🔹 Improve UI animations & chatbot avatar.
+## 📌 Future Improvements  
+- Store chat history in a **database** (MongoDB).  
+- Implement **user authentication** for personalized experiences.  
+- Add **multi-language support**.  
+- Improve **UI animations & chatbot avatar**.  
+
 
 ## 🏆 Contributing
 💙 Want to contribute? Feel free to submit a PR or report issues. Let's make NEMO even better!
