@@ -6,8 +6,7 @@
 ---
 
 ![Tech Stack](https://img.shields.io/badge/Tech%20Stack-Node.js%20%7C%20Express.js%20%7C%20EJS%20%7C%20Google%20Generative%20AI-brightgreen?style=flat-square)  
-![License](https://img.shields.io/badge/License-MIT-blue.svg)  
-![Status](https://img.shields.io/badge/Status-Active-success?style=flat-square)  
+
 
 ---
 
